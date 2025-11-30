@@ -1,0 +1,9 @@
+{
+  "today": [
+    {"id": 1, "name": "Sample Item 1", "veg": true, "price": 80, "image": "image1.jpg"},
+    {"id": 2, "name": "Sample Item 2", "veg": false, "price": 120, "image": "image2.jpg"}
+  ],
+  "tomorrow": [
+    {"id": 3, "name": "Sample Item 3", "veg": true, "price": 70, "image": "image3.jpg"}
+  ]
+}
