@@ -1,0 +1,6 @@
+.menu-card {
+  transition: transform 0.2s ease;
+}
+.menu-card:hover {
+  transform: scale(1.03);
+}
