@@ -9,7 +9,6 @@ export default function Navbar() {
 
         <Link className="nav-link" to="/">Home</Link>
         <Link className="nav-link" to="/menu">Menu</Link>
-        <Link className="nav-link" to="/order">Order</Link>
         <Link className="nav-link" to="/admin">Admin</Link>
       </div>
     </nav>
