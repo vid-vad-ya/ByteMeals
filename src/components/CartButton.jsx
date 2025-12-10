@@ -1,17 +1,15 @@
 import React from "react";
 import { useCart } from "../context/CartContext";
-import { useNavigate } from "react-router-dom";
 import "../styles/cart.css";
 
-export default function CartButton() {
+export default function CartButton({ openDrawer }) {
   const { cart } = useCart();
-  const navigate = useNavigate();
   const qty = cart.reduce((s, i) => s + (i.qty || 0), 0);
 
   return (
     <button
       className="cart-fab"
-      onClick={() => navigate("/cart")}
+      onClick={openDrawer}
       aria-label="Open cart"
       title="Open cart"
     >
