@@ -1,21 +1,62 @@
+import { useNavigate } from "react-router-dom";
 import "../styles/layout.css";
 import "../styles/buttons.css";
-import { Link } from "react-router-dom";
+import "../styles/home.css";
 
 export default function Home() {
+  const navigate = useNavigate();
+
   return (
-    <div className="page-container">
-      <h1 style={{ fontSize: "38px", color: "#ff8b42" }}>
-        🍱 Welcome to ByteMeals!
-      </h1>
+    <div className="home-container">
+      {/* HERO SECTION */}
+      <div className="hero">
+        <div className="hero-left">
+          <h1 className="hero-title">
+            Homemade Fresh Meals, Delivered Daily 🍱
+          </h1>
 
-      <p style={{ color: "#5a4a42", marginBottom: "20px", fontSize: "16px" }}>
-        Warm, homely tiffin meals delivered fresh every day.
-      </p>
+          <p className="hero-subtitle">
+            Enjoy warm, tasty, home‑cooked tiffin meals prepared with love.
+            Healthy, affordable, and delivered right to your doorstep.
+          </p>
 
-      <div style={{ display: "flex", gap: "16px", marginTop: "10px" }}>
-        <Link to="/menu"><button>See Today’s Menu</button></Link>
-        <Link to="/order"><button>Order Now</button></Link>
+          <button
+            className="active-btn hero-btn"
+            onClick={() => navigate("/menu")}
+          >
+            Order Now
+          </button>
+        </div>
+
+        {/* RIGHT ILLUSTRATION */}
+        <div className="hero-right">
+          <img
+            src="https://i.imgur.com/v5ZQZMe.png"
+            alt="Tiffin Illustration"
+            className="hero-img"
+          />
+        </div>
+      </div>
+
+      {/* FEATURES SECTION */}
+      <div className="features">
+        <div className="feature-card">
+          <span className="feature-emoji">🍛</span>
+          <h3>Fresh & Homemade</h3>
+          <p>Prepared daily with high‑quality ingredients.</p>
+        </div>
+
+        <div className="feature-card">
+          <span className="feature-emoji">🚚</span>
+          <h3>Fast Delivery</h3>
+          <p>Hot meals delivered safely to your doorstep.</p>
+        </div>
+
+        <div className="feature-card">
+          <span className="feature-emoji">💸</span>
+          <h3>Budget Friendly</h3>
+          <p>Delicious meals at affordable prices.</p>
+        </div>
       </div>
     </div>
   );

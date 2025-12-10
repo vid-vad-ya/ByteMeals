@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import "../styles/layout.css";
 import "../styles/cart.css";
 import "../styles/buttons.css";
+import Toast from "../components/Toast";
+
 
 /* reuse saveOrders helper */
 function saveOrderToStorage(order) {
@@ -32,6 +34,8 @@ export default function CartPage() {
   const [address, setAddress] = useState("");
   const [notes, setNotes] = useState("");
   const [error, setError] = useState("");
+  const [showToast, setShowToast] = useState(false);
+
 
   function validateCustomer() {
     if (!name.trim()) return "Please enter your name.";
@@ -42,38 +46,55 @@ export default function CartPage() {
   }
 
   function handleCheckoutSubmit(e) {
-    e.preventDefault();
-    setError("");
-    const v = validateCustomer();
-    if (v) { setError(v); return; }
+  e.preventDefault();
+  setError("");
 
-    // Create aggregated order with customer details
-    const order = {
-      id: `ord_${Date.now()}`,
-      createdAt: new Date().toISOString(),
-      items: cart.map(i => ({ id: i.id, name: i.name, qty: i.qty, price: i.price })),
-      subtotal,
-      tax,
-      total,
-      customer: {
-        name: name.trim(),
-        phone: phone.trim(),
-        address: address.trim(),
-        notes: notes.trim()
-      },
-      status: "new"
-    };
+  const v = validateCustomer();
+  if (v) { setError(v); return; }
 
-    const ok = saveOrderToStorage(order);
-    if (!ok) {
-      setError("Failed to place order. Try again.");
-      return;
-    }
+  // Create aggregated order with customer details
+  const order = {
+    id: `ord_${Date.now()}`,
+    createdAt: new Date().toISOString(),
+    items: cart.map(i => ({
+      id: i.id,
+      name: i.name,
+      qty: i.qty,
+      price: i.price
+    })),
+    subtotal,
+    tax,
+    total,
+    customer: {
+      name: name.trim(),
+      phone: phone.trim(),
+      address: address.trim(),
+      notes: notes.trim()
+    },
+    status: "new"
+  };
 
-    clearCart();
-    // optional: redirect to admin or show confirmation
-    navigate("/admin");
+  const ok = saveOrderToStorage(order);
+  if (!ok) {
+    setError("Failed to place order. Try again.");
+    return;
   }
+
+  // Save order for OrderSuccess page
+  localStorage.setItem("byteMeals_lastOrder", JSON.stringify(order));
+
+  // Show toast FIRST
+  setShowToast(true);
+
+  // Redirect AFTER toast animation
+  setTimeout(() => {
+    navigate("/order-success");
+
+    // Clear cart AFTER redirect
+    clearCart();
+  }, 1200);
+}
+
 
   return (
     <div className="page-container">
@@ -151,6 +172,13 @@ export default function CartPage() {
                     </div>
                   </form>
                 </div>
+              )}
+
+              {showToast && (
+                <Toast
+                  message="Order placed successfully!"
+                  onClose={() => setShowToast(false)}
+                />
               )}
             </div>
           </div>
