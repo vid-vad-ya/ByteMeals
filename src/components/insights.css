@@ -1,0 +1,39 @@
+.insights-grid {
+  margin-top: 20px;
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.insight-card {
+  background: white;
+  border-radius: 14px;
+  padding: 16px;
+  border: 1px solid #ffe2cf;
+  box-shadow: 0 4px 14px rgba(255, 145, 72, 0.12);
+}
+
+.insight-title {
+  color: #7b5b4a;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.insight-big {
+  font-size: 24px;
+  font-weight: 700;
+  color: #3b2a21;
+}
+
+.prediction {
+  background: #fff7f1;
+}
+
+.insights-empty {
+  margin-top: 20px;
+  padding: 20px;
+  background: #fafafa;
+  color: #777;
+  text-align: center;
+  border-radius: 8px;
+}

@@ -1,0 +1,83 @@
+/* Admin Page Layout */
+.page-container {
+  padding: 20px;
+}
+
+/* Section Titles */
+h1 {
+  margin-bottom: 10px;
+}
+
+h2 {
+  font-size: 20px;
+  margin-top: 25px;
+  color: #3b2a21;
+}
+
+/* Admin Order Cards */
+.admin-list {
+  margin-top: 16px;
+  display: grid;
+  gap: 16px;
+}
+
+.admin-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 16px;
+  border: 1px solid #ffe4d1;
+  box-shadow: 0 4px 12px rgba(255, 140, 66, 0.1);
+}
+
+.admin-card .row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-weight: 600;
+  color: #5a4338;
+}
+
+.order-id {
+  font-size: 14px;
+  color: #b65f32;
+}
+
+.items {
+  margin-bottom: 10px;
+}
+
+.item {
+  font-size: 14px;
+  margin-bottom: 4px;
+  color: #3b2a21;
+}
+
+.total {
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: 10px;
+  color: #2e1e19;
+}
+
+/* Customer Info */
+.customer {
+  margin-top: 12px;
+  padding: 12px;
+  background: #fff8f4;
+  border-radius: 10px;
+  border: 1px solid #ffe6d8;
+}
+
+.customer strong {
+  font-size: 15px;
+  color: #3b2a21;
+}
+
+.notes {
+  margin-top: 6px;
+  font-size: 13px;
+  padding: 6px;
+  background: #fff1e8;
+  border-radius: 6px;
+  color: #a05d3c;
+}

@@ -28,9 +28,10 @@ export default function Menu() {
   const { addItem } = useCart();
   const [menu, setMenu] = useState([]);
   const [recommended, setRecommended] = useState([]);
+  const [reason, setReason] = useState("");
   const [loading, setLoading] = useState(true);
 
-  // search / category / sort states (kept simple)
+  // filters
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All");
   const [sort, setSort] = useState("featured");
@@ -43,13 +44,21 @@ export default function Menu() {
 
     const orders = loadOrders();
 
-    // compute recommendations (async-safe)
+    // compute "reason"
+    if (orders.length > 0) {
+      const last = orders[orders.length - 1];
+      if (last.items && last.items.length > 0) {
+        setReason(last.items[0].name);
+      }
+    }
+
+    // compute recommendations
     (async () => {
       try {
         const recs = await getRecommendations(m, orders, 6);
         setRecommended(recs);
-      } catch (e) {
-        console.warn("recommendation failed", e);
+      } catch (err) {
+        console.warn("Recommendation failed:", err);
         setRecommended([]);
       } finally {
         setLoading(false);
@@ -57,6 +66,7 @@ export default function Menu() {
     })();
   }, []);
 
+  // ---- Filtering logic ----
   const filtered = menu
     .filter((it) => (category === "All" ? true : it.category === category))
     .filter((it) => (search ? it.name.toLowerCase().includes(search.toLowerCase()) : true));
@@ -69,10 +79,13 @@ export default function Menu() {
 
   return (
     <div className="page-container">
+
       <h1>Menu (For Tomorrow)</h1>
 
+      {/* Search + Sort */}
       <div className="menu-header" style={{ alignItems: "center" }}>
         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+          
           <input
             className="menu-search"
             placeholder="Search dishes..."
@@ -80,29 +93,46 @@ export default function Menu() {
             onChange={(e) => setSearch(e.target.value)}
           />
 
-          <select value={sort} onChange={(e) => setSort(e.target.value)} className="menu-select">
+          <select 
+            value={sort} 
+            onChange={(e) => setSort(e.target.value)} 
+            className="menu-select"
+          >
             <option value="featured">Featured</option>
             <option value="price-asc">Price: Low → High</option>
             <option value="price-desc">Price: High → Low</option>
           </select>
+
         </div>
       </div>
 
+      {/* Categories */}
       <div style={{ margin: "10px 0 14px 0", display: "flex", gap: 8, flexWrap: "wrap" }}>
         {categories.map((cat) => (
-          <button key={cat} className={category === cat ? "chip chip-active" : "chip"} onClick={() => setCategory(cat)}>
+          <button
+            key={cat}
+            className={category === cat ? "chip chip-active" : "chip"}
+            onClick={() => setCategory(cat)}
+          >
             {cat}
           </button>
         ))}
       </div>
 
-      {/* Recommended section (mid-page) */}
+      {/* ML Recommendation Section */}
       <RecommendedSection
         recommendations={recommended}
-        onAdd={(dish) => addItem({ id: dish.id, name: dish.name, price: dish.price, image: dish.image, qty: 1 })}
+        reason={reason}
+        onAdd={(dish) => addItem({ 
+          id: dish.id, 
+          name: dish.name, 
+          price: dish.price, 
+          image: dish.image, 
+          qty: 1 
+        })}
       />
 
-      {/* menu grid */}
+      {/* Menu items */}
       {loading ? (
         <div className="menu-grid">
           {Array.from({ length: 6 }).map((_, i) => (
@@ -120,11 +150,16 @@ export default function Menu() {
         <div className="menu-grid">
           {sorted.map((dish) => (
             <div key={dish.id} className="card">
+              
               <div className="card-media">
-                <img src={dish.image || "https://via.placeholder.com/320x220?text=No+Image"} alt={dish.name} />
+                <img
+                  src={dish.image || "https://via.placeholder.com/320x220?text=No+Image"}
+                  alt={dish.name}
+                />
               </div>
 
               <div className="card-body">
+
                 <div className="card-row">
                   <h3 className="card-title">{dish.name}</h3>
                   <div className={`veg-dot ${dish.veg ? "veg" : "non-veg"}`} />
@@ -137,11 +172,24 @@ export default function Menu() {
                 </div>
 
                 <div className="card-actions">
-                  <button className="active-btn" onClick={() => addItem({ id: dish.id, name: dish.name, price: Number(dish.price), image: dish.image, qty: 1 })}>
+                  <button
+                    className="active-btn"
+                    onClick={() =>
+                      addItem({
+                        id: dish.id,
+                        name: dish.name,
+                        price: Number(dish.price),
+                        image: dish.image,
+                        qty: 1,
+                      })
+                    }
+                  >
                     Add to Cart
                   </button>
                 </div>
+
               </div>
+
             </div>
           ))}
         </div>

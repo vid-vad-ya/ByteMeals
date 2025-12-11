@@ -71,3 +71,10 @@
   padding: 8px 10px;
   font-size: 14px;
 }
+
+.reco-reason {
+  margin-top: -6px;
+  margin-bottom: 12px;
+  font-size: 13px;
+  color: #a06a4a;
+}
