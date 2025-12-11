@@ -1,0 +1,86 @@
+.admin-menu-page {
+  max-width: 900px;
+  margin: auto;
+}
+
+.menu-card {
+  background: #fff;
+  padding: 22px;
+  border-radius: 16px;
+  border: 1px solid #ffe6d5;
+  box-shadow: 0 4px 14px rgba(255, 140, 66, 0.14);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 14px;
+}
+
+.input {
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  font-size: 15px;
+}
+
+.input.full {
+  margin-top: 12px;
+  width: 100%;
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.btn-row {
+  display: flex;
+  gap: 14px;
+  margin-top: 10px;
+}
+
+.item-list {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.item-card {
+  background: #fff;
+  padding: 18px;
+  border-radius: 16px;
+  border: 1px solid #ffe2ce;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dish-name {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.meta {
+  font-size: 14px;
+  color: #777;
+  margin-top: 4px;
+}
+
+.item-actions button {
+  padding: 6px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+}
+
+.edit-btn {
+  background: #ffe5c4;
+}
+
+.delete-btn {
+  background: #ffd1d1;
+  color: #b62828;
+}

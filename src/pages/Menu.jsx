@@ -1,77 +1,139 @@
-import { useState, useMemo } from "react";
-import menuData from "../data/menu.json";
-import MenuCard from "../components/MenuCard";
+import { useEffect, useState } from "react";
+import { useCart } from "../context/CartContext";
 import "../styles/layout.css";
 import "../styles/menu.css";
 import "../styles/buttons.css";
 
-/* small modal implemented inline for item preview */
-function ItemModal({ item, onClose }) {
-  if (!item) return null;
-  return (
-    <div className="modal-backdrop" onClick={onClose}>
-      <div className="modal" onClick={(e) => e.stopPropagation()}>
-        <img src={item.image} alt={item.name} style={{ width: "100%", borderRadius: 8 }} />
-        <h2 style={{ marginTop: 12 }}>{item.name}</h2>
-        <p>₹{item.price}</p>
-        <p style={{ color: item.veg ? "green" : "red", fontWeight: 600 }}>{item.veg ? "Veg" : "Non‑Veg"}</p>
-        <button onClick={onClose} style={{ marginTop: 12 }}>Close</button>
-      </div>
-    </div>
-  );
+function loadMenu() {
+  try {
+    const raw = localStorage.getItem("byteMeals_menu");
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
 }
 
 export default function Menu() {
-  const [day, setDay] = useState("today");
-  const [vegOnly, setVegOnly] = useState(false);
-  const [query, setQuery] = useState("");
-  const [previewItem, setPreviewItem] = useState(null);
+  const { addItem } = useCart();
 
-  // don't mutate menuData; compute filtered list on each render using useMemo
-  const itemsForDay = menuData[day] ? [...menuData[day]] : [];
+  const [menu, setMenu] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+  const [sort, setSort] = useState("featured");
+  const [category, setCategory] = useState("All");
 
-  const filtered = useMemo(() => {
-    let items = itemsForDay;
-    if (vegOnly) items = items.filter(i => i.veg);
-    if (query && query.trim().length) {
-      const q = query.trim().toLowerCase();
-      items = items.filter(i => i.name.toLowerCase().includes(q));
-    }
-    return items;
-  }, [itemsForDay, vegOnly, query]);
+  const categories = ["All", "Main", "Rice", "Curry", "Snacks", "Dessert"];
+
+  useEffect(() => {
+    setMenu(loadMenu());
+    setTimeout(() => setLoading(false), 200);
+  }, []);
+
+  const filtered = menu
+    .filter((it) => (category === "All" ? true : it.category === category))
+    .filter((it) =>
+      search ? it.name.toLowerCase().includes(search.toLowerCase()) : true
+    );
+
+  const sorted = filtered.slice().sort((a, b) => {
+    if (sort === "price-asc") return a.price - b.price;
+    if (sort === "price-desc") return b.price - a.price;
+    return 0;
+  });
 
   return (
-    <>
-      <div className="page-container">
-        <h1>Menu</h1>
+    <div className="page-container">
+      <h1>Menu (For Tomorrow)</h1>
 
-        <div className="filters" role="region" aria-label="menu filters">
-          <button onClick={() => setDay("today")} className={day === "today" ? "active-btn" : ""}>Today</button>
-          <button onClick={() => setDay("tomorrow")} className={day === "tomorrow" ? "active-btn" : ""}>Tomorrow</button>
-          <button onClick={() => setVegOnly(v => !v)}>{vegOnly ? "Show All" : "Veg Only"}</button>
-        </div>
-
+      <div className="menu-header">
         <input
-          type="search"
-          className="search-input"
+          className="menu-search"
           placeholder="Search dishes..."
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          aria-label="Search dishes"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
         />
 
-        <div className="menu-grid" role="list">
-          {filtered.length === 0 ? (
-            <p style={{ marginTop: 20, color: "#666" }}>No dishes match your criteria.</p>
-          ) : (
-            filtered.map(item => (
-              <MenuCard key={item.id} item={item} onClick={() => setPreviewItem(item)} />
-            ))
-          )}
-        </div>
+        <select
+          value={sort}
+          onChange={(e) => setSort(e.target.value)}
+          className="menu-select"
+        >
+          <option value="featured">Featured</option>
+          <option value="price-asc">Price: Low → High</option>
+          <option value="price-desc">Price: High → Low</option>
+        </select>
       </div>
 
-      <ItemModal item={previewItem} onClose={() => setPreviewItem(null)} />
-    </>
+      {/* Category chips */}
+      <div className="chip-row">
+        {categories.map((cat) => (
+          <button
+            key={cat}
+            className={category === cat ? "chip chip-active" : "chip"}
+            onClick={() => setCategory(cat)}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
+
+      {/* Skeleton loader */}
+      {loading ? (
+        <div className="menu-grid">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="card skeleton">
+              <div className="img-skel" />
+              <div className="text-skel short" />
+              <div className="text-skel long" />
+              <div className="btn-skel" />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="menu-grid">
+          {sorted.map((dish) => (
+            <div key={dish.id} className="card">
+              <div className="card-media">
+                <img
+                  src={
+                    dish.image ||
+                    "https://via.placeholder.com/300x220?text=No+Image"
+                  }
+                  alt={dish.name}
+                />
+              </div>
+
+              <div className="card-body">
+                <div className="card-row">
+                  <h3 className="card-title">{dish.name}</h3>
+                  <span className={`veg-dot ${dish.veg ? "veg" : "non-veg"}`} />
+                </div>
+
+                <div className="card-sub">₹{dish.price}</div>
+
+                <div className="card-meta">
+                  <span className="tag category">{dish.category}</span>
+                </div>
+
+                <button
+                  className="active-btn"
+                  onClick={() =>
+                    addItem({
+                      id: dish.id,
+                      name: dish.name,
+                      price: dish.price,
+                      image: dish.image,
+                      qty: 1,
+                    })
+                  }
+                >
+                  Add to Cart
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }

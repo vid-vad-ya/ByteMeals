@@ -1,32 +1,29 @@
 import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
-import Home from "./pages/Home";
 import Menu from "./pages/Menu";
 import CartPage from "./pages/Cart";
 import Admin from "./pages/Admin";
-import CartButton from "./components/CartButton";
+import AdminMenu from "./pages/AdminMenu";
 import OrderSuccess from "./pages/OrderSuccess";
-import CartDrawer from "./components/CartDrawer";
-import { useState } from "react";
+import CartButton from "./components/CartButton";
 
 export default function App() {
-  const [drawerOpen, setDrawerOpen] = useState(false);
-
   return (
     <>
       <Navbar />
-
-      {/* IMPORTANT: Pass openDrawer prop to CartButton */}
-      <CartButton openDrawer={() => setDrawerOpen(true)} />
-
-      {/* Cart Drawer */}
-      <CartDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
+      <CartButton />
 
       <Routes>
-        <Route path="/" element={<Home />} />
+        {/* Home → Menu */}
+        <Route path="/" element={<Menu />} />
+
         <Route path="/menu" element={<Menu />} />
         <Route path="/cart" element={<CartPage />} />
         <Route path="/admin" element={<Admin />} />
+
+        {/* FIXED: matches Navbar */}
+        <Route path="/admin/menu" element={<AdminMenu />} />
+
         <Route path="/order-success" element={<OrderSuccessWrapper />} />
       </Routes>
     </>
