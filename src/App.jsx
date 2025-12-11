@@ -6,22 +6,29 @@ import Admin from "./pages/Admin";
 import AdminMenu from "./pages/AdminMenu";
 import OrderSuccess from "./pages/OrderSuccess";
 import CartButton from "./components/CartButton";
+import CartDrawer from "./components/CartDrawer";
+import { useState } from "react";
 
 export default function App() {
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
   return (
     <>
       <Navbar />
-      <CartButton />
+
+      {/* IMPORTANT: pass openDrawer */}
+      <CartButton openDrawer={() => setDrawerOpen(true)} />
+
+      {/* IMPORTANT: Drawer must be rendered */}
+      <CartDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
 
       <Routes>
-        {/* Home → Menu */}
         <Route path="/" element={<Menu />} />
-
         <Route path="/menu" element={<Menu />} />
         <Route path="/cart" element={<CartPage />} />
         <Route path="/admin" element={<Admin />} />
 
-        {/* FIXED: matches Navbar */}
+        {/* Fixed path */}
         <Route path="/admin/menu" element={<AdminMenu />} />
 
         <Route path="/order-success" element={<OrderSuccessWrapper />} />
